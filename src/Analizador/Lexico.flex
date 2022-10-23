@@ -1,4 +1,5 @@
 package Analizador;
+import java_cup.runtime.*;
 import static Analizador.Tokens.*;
 %%
 %class Lexico
@@ -267,7 +268,10 @@ L?\"(\\.|[^\\\"])*\" {lexemas=yytext(); return STRING_LITERAL;}
 {L}({L}|{D})* {lexemas=yytext(); return Identificador;}
 
 /* Numero */
-("-("{D}+")") | ("-("{D}+.{D}+")") | -({D})+ | {D}+ | {D}+.{D}+ | -{D}+.{D}+ {lexemas=yytext(); return Numero;}
+("-("{D}+")") | -({D})+ | {D}+ {lexemas=yytext(); return Numero;}
+
+/* Numero Decimal */
+("-("{D}+.{D}+")") | {D}+.{D}+ | -{D}+.{D}+ {lexemas=yytext(); return NumeroDecimal;}
 
 /* Error de analisis */
  . {return ERROR;}

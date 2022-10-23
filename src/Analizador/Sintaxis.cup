@@ -1,50 +1,60 @@
 package Analizador;
 
-import java_cup.runtime.Symbol;
+import java.io.*;
+import java.util.*;
+import java_cup.runtime.*;
+import javax.xml.stream.*;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
 import java.util.ArrayList;
 
 //----> Codigo para el parser,variables, metodos
 parser code
 {:
     private Symbol s;
-    
+    private Symbol error_symbol;
+
     //Metodo al que se llama automaticamente para algun error
     public void syntax_error(Symbol s){ 
-        this.s = s;
+        this.error_symbol = s;
+    }
+    public static void newScope(){
+        typenames.push(new HashSet<String>());
+    }
+    public static void deleteScope(){
+        typenames.pop();
+    }
+    public static boolean lookupType(String name){
+        for (HashSet<String> scope: typenames)
+            if (scope.contains(name)) return true;
+        return false;
+    }
+    public static void addType(String name){
+        typenames.peek().add(name);
+    }
+    public static LinkedList<HashSet<String>> typenames = new LinkedList<HashSet<String>>();
+    public Symbol getErrorSymbol(){
+        return this.error_symbol;
     }
 
     public Symbol getS(){
         return this.s;
-}
-
-/*
+    }
+    
 //Metodo al que se llama en el momento en que ya no es posible recuperacion de errores
 public void unrecovered_syntax_error (Symbol s) throws java.lang.Exception
 {
-   String lexema=s.value.toString();
-   int fila=s.right;
-   int columna=s.left;
-   System.out.println(" !!! Error Sintactico  !!!!");
-   System.out.println("\t\t Lexema : " +lexema);
-   System.out.println("\t\t Fila : " +fila);
-   System.out.println("\t\t Columna : " +columna);
+    String lexema=s.value.toString();
+    int fila=s.right;
+    int columna=s.left;
+    System.out.println(" !!! Error Sintactico  !!!!");
+    System.out.println("\t\t Lexema : " +lexema);
+    System.out.println("\t\t Fila : " +fila);
+    System.out.println("\t\t Columna : " +columna);
+    this.error_symbol = s;
+    throw new Exception("!!! Error Sintactico  !!!!");
 }
-*/
 :};
-
-//-->Codigo para acciones gramaticales
-action code
-{:
-        ArrayList<String> listadeId = new ArrayList();
-        String tipo="",tipoaux="";
-        int nparametros;
-        Boolean bandera=false;
-        Boolean banderaasig=false;
-:}
-
-
-
-
 
 terminal Bool, BitAnd, BitOr, Break, Byte, Case, Char, Cin, Coma, Comilla_simple, Comillas,
     ComparadorIgual, Const, Continue, Corchete_a, Corchete_c, Cout, Default, Define, Decremento,
@@ -83,6 +93,23 @@ INICIO ::=
     Int Main Parent_a Parent_c Llave_a SENTENCIA Llave_c |
     Main Parent_a Parent_c Llave_a SENTENCIA Llave_c
 ;
+/*
+DECLARAR_FUNCION::=
+    Void IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c
+    Int IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    Unsigned Int IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    Short Int IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    Unsigned Short Int IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    Long Int IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    Unsigned Long Int IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    Double IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    Long Double IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    Float IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    Char IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    Unsigned Char IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    _String IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    Bool IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c
+;*/
 SENTENCIA ::= 
     SENTENCIA DECLARACION |
     DECLARACION |
@@ -127,18 +154,22 @@ DECLARACION_ARREGLO::=
     Identificador Corchete_a Numero Corchete_c 
 ;
 DECLARACION_ENTERO::=
+    Identificador |
     Identificador Igual Numero |
     Identificador Igual Numero Coma DECLARACION_ENTERO
 ;
 DECLARACION_FLOTANTE::=
+    Identificador |
     Identificador Igual NumeroDecimal |
     Identificador Igual NumeroDecimal Coma DECLARACION_FLOTANTE
 ;
 DECLARACION_STRING::=
+    Identificador |
     Identificador Igual STRING_LITERAL |
     Identificador Igual STRING_LITERAL Coma DECLARACION_STRING |
 ;
 DECLARACION_BOOLEANA::=
+    Identificador |
     Identificador Igual True Coma DECLARACION_BOOLEANA |
     Identificador Igual False Coma DECLARACION_BOOLEANA |
     Identificador Igual True |

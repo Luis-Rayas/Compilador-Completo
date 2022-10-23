@@ -42,7 +42,7 @@
                                   <EmptySpace min="-2" pref="67" max="-2" attributes="0"/>
                                   <Component id="BotonSintactico" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="Borrar3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnSintacticoBorrar" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jScrollPane4" min="-2" pref="361" max="-2" attributes="0"/>
@@ -60,9 +60,9 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="BotonSintactico1" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnSemantico" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="Borrar2" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnBorrarSemantico" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jScrollPane5" alignment="0" min="-2" pref="324" max="-2" attributes="0"/>
                       </Group>
@@ -85,11 +85,11 @@
               <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="BotonSintactico" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                  <Component id="Borrar2" alignment="3" max="32767" attributes="0"/>
+                  <Component id="btnBorrarSemantico" alignment="3" max="32767" attributes="0"/>
                   <Component id="BotonAnalisis" alignment="3" max="32767" attributes="0"/>
                   <Component id="Borrar1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="BotonSintactico1" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                  <Component id="Borrar3" alignment="3" max="32767" attributes="0"/>
+                  <Component id="btnSemantico" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
+                  <Component id="btnSintacticoBorrar" alignment="3" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -186,7 +186,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Borrar1ActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="Borrar2">
+    <Component class="javax.swing.JButton" name="btnBorrarSemantico">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="24" style="0"/>
@@ -194,7 +194,7 @@
         <Property name="text" type="java.lang.String" value="Borrar"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Borrar2ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBorrarSemanticoActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel3">
@@ -319,7 +319,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="BotonSintactico1">
+    <Component class="javax.swing.JButton" name="btnSemantico">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="24" style="0"/>
@@ -327,10 +327,10 @@
         <Property name="text" type="java.lang.String" value="An&#xe1;lisis Semantico"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BotonSintactico1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSemanticoActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="Borrar3">
+    <Component class="javax.swing.JButton" name="btnSintacticoBorrar">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="24" style="0"/>
@@ -338,7 +338,7 @@
         <Property name="text" type="java.lang.String" value="Borrar"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Borrar3ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSintacticoBorrarActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane5">
@@ -348,7 +348,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTextArea" name="txtAnalizarSin1">
+        <Component class="javax.swing.JTextArea" name="txtSemantico">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="columns" type="int" value="20"/>

@@ -1,12 +1,16 @@
 package Analizador;
-import java_cup.runtime.Symbol;
+import java_cup.runtime.*;
+import java.util.ArrayList;
 %%
 %class LexicoCup
 %type java_cup.runtime.Symbol
 %cup 
+ %char
+%column
 %full
+%ignorecase
 %line
-%char
+%unicode
 L=[a-zA-Z_]+
 D=[0-9]+
 espacio=[ \t \r \n]+
