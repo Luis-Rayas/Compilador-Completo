@@ -70,6 +70,7 @@ public enum Tokens {
     Namespace,
     Negador,
     Numero,
+    NumeroDecimal,
     Numeral,
     
     O_logico,

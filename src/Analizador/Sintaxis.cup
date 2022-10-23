@@ -1,26 +1,57 @@
 package Analizador;
 
 import java_cup.runtime.Symbol;
+import java.util.ArrayList;
 
+//----> Codigo para el parser,variables, metodos
 parser code
 {:
     private Symbol s;
     
-    public void syntax_error(Symbol s){
+    //Metodo al que se llama automaticamente para algun error
+    public void syntax_error(Symbol s){ 
         this.s = s;
     }
 
     public Symbol getS(){
         return this.s;
 }
+
+/*
+//Metodo al que se llama en el momento en que ya no es posible recuperacion de errores
+public void unrecovered_syntax_error (Symbol s) throws java.lang.Exception
+{
+   String lexema=s.value.toString();
+   int fila=s.right;
+   int columna=s.left;
+   System.out.println(" !!! Error Sintactico  !!!!");
+   System.out.println("\t\t Lexema : " +lexema);
+   System.out.println("\t\t Fila : " +fila);
+   System.out.println("\t\t Columna : " +columna);
+}
+*/
 :};
+
+//-->Codigo para acciones gramaticales
+action code
+{:
+        ArrayList<String> listadeId = new ArrayList();
+        String tipo="",tipoaux="";
+        int nparametros;
+        Boolean bandera=false;
+        Boolean banderaasig=false;
+:}
+
+
+
+
 
 terminal Bool, BitAnd, BitOr, Break, Byte, Case, Char, Cin, Coma, Comilla_simple, Comillas,
     ComparadorIgual, Const, Continue, Corchete_a, Corchete_c, Cout, Default, Define, Decremento,
     Diferente, Division, DivisionIgual, Do, Double, DobleMayor, DobleMenor, DosPuntos, Else, Endl,
     ERROR, Et, False, Float, For, Identificador, If, Igual, Int, Include, Incremento, Iostream, Linea,
     Llave_a, Llave_c, Long, Main, MasIgual, MenosIgual, MayorQue, MenorQue, MayorIgual, MenorIgual,
-    Modulo, ModuloIgual, Multiplicacion, MultiplicacionIgual, Namespace, Negador, Numero, Numeral,    
+    Modulo, ModuloIgual, Multiplicacion, MultiplicacionIgual, Namespace, Negador, Numero, NumeroDecimal, Numeral,    
     O_logico, Parent_a, Parent_c, P_coma, Printf, Punto, Register, Resta, Return, Scanf, Short, Suma, _System,
     Std, _String, Struct, Switch, Typedef, True, Unsigned, Using, Void, While, Y_logico, STRING_LITERAL;
 
@@ -30,6 +61,7 @@ non terminal INICIO, SENTENCIA, DECLARACION, IF, FOR, COMPLEMENTO,
     SENTENCIA_BOOLEANA_ANIDADA, FOR_PARTE_UNO, OPERACIONES_COMPLEMENTARIAS,
     WHILE, DO_WHILE, OPERADORES_ARITMETICOS, COUT, SALIDA, CIN, ENTRADA,
     CASE, SWITCH, CREACION_ARREGLO, DECLARACION_ARREGLO_ANIDADA,
+    DECLARACION_ENTERO, DECLARACION_FLOTANTE, DECLARACION_STRING, DECLARACION_BOOLEANA,
     DECLARACION_ARREGLO, IDENTIFICADORES, PRINTF, SCANF;
 
 start with INICIO;
@@ -75,19 +107,6 @@ SENTENCIA ::=
     SENTENCIA SCANF | 
     SCANF
 ;
-DECLARACION_ANIDADA::=
-    Identificador Igual Numero |
-    Identificador Igual Numero Coma DECLARACION_ANIDADA |
-    Identificador Igual STRING_LITERAL |
-    Identificador Igual STRING_LITERAL Coma DECLARACION_ANIDADA |
-    Identificador Coma DECLARACION_ANIDADA |
-    Identificador Igual Identificador |
-    Identificador Igual True Coma DECLARACION_ANIDADA |
-    Identificador Igual False Coma DECLARACION_ANIDADA |
-    Identificador Igual True |
-    Identificador Igual False |
-    Identificador 
-;
 CREACION_ARREGLO::=
     Numero Coma CREACION_ARREGLO |
     Numero |
@@ -107,20 +126,43 @@ DECLARACION_ARREGLO::=
     Identificador Corchete_a Numero Corchete_c Coma DECLARACION_ARREGLO |
     Identificador Corchete_a Numero Corchete_c 
 ;
+DECLARACION_ENTERO::=
+    Identificador Igual Numero |
+    Identificador Igual Numero Coma DECLARACION_ENTERO
+;
+DECLARACION_FLOTANTE::=
+    Identificador Igual NumeroDecimal |
+    Identificador Igual NumeroDecimal Coma DECLARACION_FLOTANTE
+;
+DECLARACION_STRING::=
+    Identificador Igual STRING_LITERAL |
+    Identificador Igual STRING_LITERAL Coma DECLARACION_STRING |
+;
+DECLARACION_BOOLEANA::=
+    Identificador Igual True Coma DECLARACION_BOOLEANA |
+    Identificador Igual False Coma DECLARACION_BOOLEANA |
+    Identificador Igual True |
+    Identificador Igual False |
+;
+DECLARACION_ANIDADA::=    
+    Identificador Coma DECLARACION_ANIDADA |
+    Identificador Igual Identificador |
+    Identificador 
+;
 DECLARACION ::=   
-    Int DECLARACION_ANIDADA P_coma |
-    Unsigned Int DECLARACION_ANIDADA P_coma |
-    Short Int DECLARACION_ANIDADA P_coma |
-    Unsigned Short Int DECLARACION_ANIDADA P_coma |
-    Long Int DECLARACION_ANIDADA P_coma |
-    Unsigned Long Int DECLARACION_ANIDADA P_coma |
-    Double DECLARACION_ANIDADA P_coma |
-    Long Double DECLARACION_ANIDADA P_coma |
-    Float DECLARACION_ANIDADA P_coma |
+    Int DECLARACION_ENTERO P_coma |
+    Unsigned Int DECLARACION_ENTERO P_coma |
+    Short Int DECLARACION_ENTERO P_coma |
+    Unsigned Short Int DECLARACION_ENTERO P_coma |
+    Long Int DECLARACION_ENTERO P_coma |
+    Unsigned Long Int DECLARACION_ENTERO P_coma |
+    Double DECLARACION_FLOTANTE P_coma |
+    Long Double DECLARACION_FLOTANTE P_coma |
+    Float DECLARACION_FLOTANTE P_coma |
     Char DECLARACION_ANIDADA P_coma |
     Unsigned Char DECLARACION_ANIDADA P_coma |
-    _String DECLARACION_ANIDADA P_coma |
-    Bool DECLARACION_ANIDADA  P_coma |
+    _String DECLARACION_STRING P_coma |
+    Bool DECLARACION_BOOLEANA  P_coma |
     DECLARACION_ARREGLO_ANIDADA
 ;
 OPERADORES_ARITMETICOS::=

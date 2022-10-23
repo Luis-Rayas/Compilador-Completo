@@ -280,7 +280,11 @@ L?\"(\\.|[^\\\"])*\" {return new Symbol(sym.STRING_LITERAL, yychar, yyline, yyte
 {L}({L}|{D})* {return new Symbol(sym.Identificador, yychar, yyline, yytext());}
 
 /* Numero */
-("-("{D}+")") | ("-("{D}+.{D}+")") | -({D})+ | {D}+ | {D}+.{D}+ | -{D}+.{D}+ {return new Symbol(sym.Numero, yychar, yyline, yytext());}
+("-("{D}+")") | -({D})+ | {D}+ {return new Symbol(sym.Numero, yychar, yyline, yytext());}
+
+/* Numero Decimal */
+("-("{D}+.{D}+")") | {D}+.{D}+ | -{D}+.{D}+ {return new Symbol(sym.NumeroDecimal, yychar, yyline, yytext());}
+
 
 /* Error de analisis */
  . {return new Symbol(sym.ERROR, yychar, yyline, yytext());}
