@@ -7,12 +7,14 @@ import javax.xml.stream.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 import java.util.ArrayList;
+import Analizador.Lexico;
 
 //----> Codigo para el parser,variables, metodos
 parser code
 {:
     private Symbol s;
     private Symbol error_symbol;
+    private List<Symbol> identificadores = new ArrayList<Symbol>();
 
     //Metodo al que se llama automaticamente para algun error
     public void syntax_error(Symbol s){ 
@@ -39,6 +41,10 @@ parser code
 
     public Symbol getS(){
         return this.s;
+    }
+
+    public List<Symbol> getIdentificadores(){
+        return this.identificadores;
     }
     
 //Metodo al que se llama en el momento en que ya no es posible recuperacion de errores
@@ -71,7 +77,6 @@ non terminal INICIO, SENTENCIA, DECLARACION, IF, FOR, COMPLEMENTO,
     SENTENCIA_BOOLEANA_ANIDADA, FOR_PARTE_UNO, OPERACIONES_COMPLEMENTARIAS,
     WHILE, DO_WHILE, OPERADORES_ARITMETICOS, COUT, SALIDA, CIN, ENTRADA,
     CASE, SWITCH, CREACION_ARREGLO, DECLARACION_ARREGLO_ANIDADA,
-    DECLARACION_ENTERO, DECLARACION_FLOTANTE, DECLARACION_STRING, DECLARACION_BOOLEANA,
     DECLARACION_ARREGLO, IDENTIFICADORES, PRINTF, SCANF;
 
 start with INICIO;
@@ -93,23 +98,6 @@ INICIO ::=
     Int Main Parent_a Parent_c Llave_a SENTENCIA Llave_c |
     Main Parent_a Parent_c Llave_a SENTENCIA Llave_c
 ;
-/*
-DECLARAR_FUNCION::=
-    Void IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c
-    Int IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
-    Unsigned Int IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
-    Short Int IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
-    Unsigned Short Int IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
-    Long Int IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
-    Unsigned Long Int IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
-    Double IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
-    Long Double IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
-    Float IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
-    Char IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
-    Unsigned Char IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
-    _String IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
-    Bool IDENTIFICADOR Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c
-;*/
 SENTENCIA ::= 
     SENTENCIA DECLARACION |
     DECLARACION |
@@ -153,47 +141,26 @@ DECLARACION_ARREGLO::=
     Identificador Corchete_a Numero Corchete_c Coma DECLARACION_ARREGLO |
     Identificador Corchete_a Numero Corchete_c 
 ;
-DECLARACION_ENTERO::=
-    Identificador |
-    Identificador Igual Numero |
-    Identificador Igual Numero Coma DECLARACION_ENTERO
-;
-DECLARACION_FLOTANTE::=
-    Identificador |
-    Identificador Igual NumeroDecimal |
-    Identificador Igual NumeroDecimal Coma DECLARACION_FLOTANTE
-;
-DECLARACION_STRING::=
-    Identificador |
-    Identificador Igual STRING_LITERAL |
-    Identificador Igual STRING_LITERAL Coma DECLARACION_STRING |
-;
-DECLARACION_BOOLEANA::=
-    Identificador |
-    Identificador Igual True Coma DECLARACION_BOOLEANA |
-    Identificador Igual False Coma DECLARACION_BOOLEANA |
-    Identificador Igual True |
-    Identificador Igual False |
-;
 DECLARACION_ANIDADA::=    
+    Identificador  |
     Identificador Coma DECLARACION_ANIDADA |
     Identificador Igual Identificador |
-    Identificador 
+    Identificador Igual Numero | 
 ;
 DECLARACION ::=   
-    Int DECLARACION_ENTERO P_coma |
-    Unsigned Int DECLARACION_ENTERO P_coma |
-    Short Int DECLARACION_ENTERO P_coma |
-    Unsigned Short Int DECLARACION_ENTERO P_coma |
-    Long Int DECLARACION_ENTERO P_coma |
-    Unsigned Long Int DECLARACION_ENTERO P_coma |
-    Double DECLARACION_FLOTANTE P_coma |
-    Long Double DECLARACION_FLOTANTE P_coma |
-    Float DECLARACION_FLOTANTE P_coma |
+    Int DECLARACION_ANIDADA P_coma |
+    Unsigned Int DECLARACION_ANIDADA P_coma |
+    Short Int DECLARACION_ANIDADA P_coma |
+    Unsigned Short Int DECLARACION_ANIDADA P_coma |
+    Long Int DECLARACION_ANIDADA P_coma |
+    Unsigned Long Int DECLARACION_ANIDADA P_coma |
+    Double DECLARACION_ANIDADA P_coma |
+    Long Double DECLARACION_ANIDADA P_coma |
+    Float DECLARACION_ANIDADA P_coma |
     Char DECLARACION_ANIDADA P_coma |
     Unsigned Char DECLARACION_ANIDADA P_coma |
-    _String DECLARACION_STRING P_coma |
-    Bool DECLARACION_BOOLEANA  P_coma |
+    _String DECLARACION_ANIDADA P_coma |
+    Bool DECLARACION_ANIDADA  P_coma |
     DECLARACION_ARREGLO_ANIDADA
 ;
 OPERADORES_ARITMETICOS::=

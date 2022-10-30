@@ -1,10 +1,17 @@
 package Analizador;
 
+import Analizador.semantic.AnalizadorSemantico;
+import Analizador.semantic.LexerSemantic;
+import Analizador.semantic.Parser;
+import helpers.Table;
+import helpers.TableQuad;
+import helpers.TreeNode;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -309,8 +316,6 @@ public class FrmAnalizador extends javax.swing.JFrame {
         String expr = (String) Resultado.getText();
         Lexico lexicos = new Lexico(new StringReader(expr));
         DefaultTableModel model = (DefaultTableModel)tb_tokens.getModel();
-        identificadores.clear();
-        warnings.clear();
         model.setRowCount(0);
         String resultado = "NO. LINEA \t\tSIMBOLO\nLINEA " + cont + "\n";
         while (true) {
@@ -320,6 +325,7 @@ public class FrmAnalizador extends javax.swing.JFrame {
                 habilitarSintactico();
                 return;
             }
+            /*
             switch (token) {
                 case Linea:
                     cont++;
@@ -573,11 +579,11 @@ public class FrmAnalizador extends javax.swing.JFrame {
                 default:
                     resultado += "  < " + lexicos.lexemas + " >\n";
                     break;
-            }
+            }*/
             model.addRow(new Object[]{
                 cont,
                 lexicos.yytext(),
-                token.name()
+                token
             });
         }
 
@@ -585,22 +591,61 @@ public class FrmAnalizador extends javax.swing.JFrame {
 
     private void analizarSintactico(){
         String ST = Resultado.getText();
-        Sintaxis s = new Sintaxis(new LexicoCup(new StringReader(ST)));
+        //Sintaxis s = new Sintaxis(new LexicoCup(new StringReader(ST)));
+        Parser s = new Parser(new LexerSemantic((Reader)(new StringReader(ST))));
         try {
-            s.parse();          
-            txtAnalizarSin.setText("Analisis realizado correctamente");
-            txtAnalizarSin.setForeground(new Color(25, 111, 61));
-            habilitarSemantico();
+            s.parse();
+            if(s.error_sym!=null){
+                Symbol sym = s.error_sym;
+                txtAnalizarSin.setText("Error de sintaxis. Linea: " + (sym.right+1) + " Columna: " + (sym.left+1) + ", Texto: \"" + sym.value.toString() + "\"");
+                txtAnalizarSin.setForeground(Color.red);
+                deshabilitarSemantico();
+            } else {
+                txtAnalizarSin.setText("Analisis realizado correctamente");
+                txtAnalizarSin.setForeground(new Color(25, 111, 61));
+                habilitarSemantico();            
+            }
         } catch (Exception ex) {
-            Symbol sym = s.getErrorSymbol();
-            txtAnalizarSin.setText("Error de sintaxis. Linea: " + (sym.right+1) + " Columna: " + (sym.left+1) + ", Texto: \"" + sym.value + "\"");
+            s.report_error("Error!", ex);
+            txtAnalizarSin.setText(s.report_error(ex));
             txtAnalizarSin.setForeground(Color.red);
             deshabilitarSemantico();
+            /*Symbol sym = s.getErrorSymbol();
+            txtAnalizarSin.setText("Error de sintaxis. Linea: " + (sym.right+1) + " Columna: " + (sym.left+1) + ", Texto: \"" + sym.value + "\"");
+            txtAnalizarSin.setForeground(Color.red);
+            deshabilitarSemantico();*/
         }
     }
     
     private void analizarSemantico(){
-        
+        txtSemantico.setText(null);
+        AnalizadorSemantico.errors.clear();
+        System.out.println("\n---------------------------------------------------------------");
+        try {
+            Parser cupParser = new Parser(new StringReader(Resultado.getText()));
+            TreeNode AST = (TreeNode) cupParser.parse().value;
+            AST.reduceTreeNode();
+            //AST.saveTreeToFile("treeASTFile");
+            Table table = new Table();
+            AnalizadorSemantico.semantico(AST, table);
+            AnalizadorSemantico.cuadruplos(AST, table, 0);
+            TableQuad quad = AnalizadorSemantico.cuadruplos(AST, table, 0);
+            System.out.println(AST.toString());
+        } catch (Exception ex) {
+            Logger.getLogger(FrmAnalizador.class.getName()).log(Level.SEVERE, null, ex);
+        }    
+        if(!AnalizadorSemantico.errors.isEmpty()){
+            StringBuilder str = new StringBuilder();
+            for (int i = 0; i < AnalizadorSemantico.errors.size(); i++) {
+                str.append(AnalizadorSemantico.errors.get(i)).append("\n");
+            }
+            System.out.println(AnalizadorSemantico.errors.size());
+            txtSemantico.setText(str.toString());
+            txtSemantico.setForeground(Color.RED);
+        } else {
+            txtSemantico.setText("Analisis realizado correctamente");
+            txtSemantico.setForeground(new Color(25, 111, 61));
+        }
     }
     
     private void generacionCodigo(){
@@ -700,11 +745,7 @@ public class FrmAnalizador extends javax.swing.JFrame {
     }//GEN-LAST:event_jBSaveActionPerformed
 
     private void btnSemanticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSemanticoActionPerformed
-        StringBuilder str = new StringBuilder();
-        for (int i = 0; i < warnings.size(); i++) {
-            str.append("Warning: La variable: " + warnings.get(i) + " ya ah sido definida previamente");
-        }
-        txtSemantico.setText(str.toString());
+        analizarSemantico();
     }//GEN-LAST:event_btnSemanticoActionPerformed
 
     private void btnSintacticoBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSintacticoBorrarActionPerformed
