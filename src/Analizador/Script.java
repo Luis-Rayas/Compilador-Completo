@@ -5,37 +5,36 @@
 package Analizador;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 //path :::  D:\Programas\MinGW\bin
 public class Script {
-    private final String compilerPath;
-    private final String programaCppPath;
-    private final String programaIPath;
-    private final String programaOPath;
-    private final String programaExePath;
-    private final String programaSPath;
-    private final String projectPath;
-    private String path;
+    private File cppFile;
+    private String compilerPath;
+    private String projectPath;
+    private String path = "D:\\Programas\\MinGW\\bin";
+    private String fileName;
      
-    public Script(String compilerPath){
-        this.compilerPath = compilerPath;
-        this.projectPath = new File ("src/Archivos/").getAbsolutePath();
-        programaCppPath = new File ("src/Archivos/Programa.cpp").getAbsolutePath();
-        programaIPath = new File ("src/Archivos/Programa.i").getAbsolutePath();
-        programaOPath = new File ("src/Archivos/Programa.o").getAbsolutePath();
-        programaExePath = new File ("src/Archivos/Programa.exe").getAbsolutePath();
-        programaSPath = new File ("src/Archivos/Programa.s").getAbsolutePath();
+    public Script(File srcFile){
+        this.compilerPath = "D:\\Programas\\MinGW\\bin";     
+        this.projectPath = srcFile.getParent();
+        this.cppFile = srcFile;
+        this.fileName = cppFile.getName().split("\\.")[0];
     }
     
     private boolean bat(String script){
-        String bat = "";
-        bat += "cmd /c start cmd.exe "; //abrir cmd
-        bat += "/K \" cd " + projectPath + " && ";
-        bat += script + "&& exit" ;
+        StringBuilder bat = new StringBuilder();
+        bat.append("cmd /C "); //abrir cmd        
+        bat.append("start cmd.exe ");
+        bat.append("/k \"cd " + projectPath + " && ");
+        bat.append(script + " && exit \"");
         System.out.println(bat);
         try {
-            Runtime.getRuntime().exec(bat);
+            Runtime.getRuntime().exec(bat.toString());
             return true;
         } catch (Exception e) {
             return false;
@@ -66,32 +65,36 @@ public class Script {
         }
     }
     
+    /*
     public boolean intermedio(){
-        String script = "cpp Programa.cpp > "+programaIPath;
+        String script = "cpp "+ fileName +".cpp > "+ fileName+".i";
         //+programaCppPath+ " > "+ programaIPath;
         //String script = "cpp Programa.cpp > Programa.i";
         return bat(script);
     }
     
     public boolean assambler(){
-        String script = "g++ -Wall -S "+programaIPath;
+        String script = "g++ -Wall -S "+ fileName + ".i";
         //String script = "g++ -Wall -S "+programaIPath;
         return bat(script);
     }
+*/
     
-    public boolean objeto(){
-        String script = "as "+programaSPath+" -o "+programaOPath;
+   /* public boolean objeto(){
+        String script = "as "+ fileName +".s -o "+ fileName + ".o";
         //String script = "as -Wall -S " + ProgramaIPath;
         return bat(script);
-    }
+    }*/
     
     public boolean ejecutable(){
-        String script = "gcc " + programaOPath + " -o Programa.exe";
-        return bat(script);
+        StringBuilder script = new StringBuilder();
+        script.append("gcc -c " + cppFile.getPath() + " -o "+fileName+".o");
+        script.append(" &&  gcc " + fileName + ".o -o " + fileName + ".exe");
+        return bat(script.toString());
     }
     
     public boolean start(){
-        String script = "start "+programaExePath;
-        return bat(script);
+        String script = "start "+ fileName +".exe";
+        return bat(script);        
     }
 }
