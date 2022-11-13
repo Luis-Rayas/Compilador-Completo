@@ -44,6 +44,9 @@ espacio=[ \t \r \n]+
 /* Palabra reservada case*/
 ( case ) {return new Symbol(sym.Case, yychar, yyline, yytext());}
 
+/* asm */
+("asm") {return new Symbol(sym.Asm, yychar, yyline, yytext());}
+
 /* Comentarios */
 ( "//"(.)* | "/"(.)* ) {/*Ignore*/}
 

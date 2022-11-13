@@ -106,5 +106,6 @@ public enum Tokens {
     
     While,
     
-    Y_logico
+    Y_logico,
+    Asm
 }

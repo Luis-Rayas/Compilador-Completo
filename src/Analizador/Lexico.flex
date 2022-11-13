@@ -81,6 +81,9 @@ L?\"(\\.|[^\\\"])*\" {lexemas=yytext(); return STRING_LITERAL;}
 /* Marcador Else*/
 ( "else" ) {lexemas=yytext(); return Else;}
 
+/* Marcador asm*/
+( "asm" ) {lexemas=yytext(); return Asm;}
+
 /* Ciclo repetitivo for */
 ( "for" ) {lexemas=yytext(); return For;}
 

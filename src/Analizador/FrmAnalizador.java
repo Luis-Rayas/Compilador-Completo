@@ -294,14 +294,14 @@ public class FrmAnalizador extends javax.swing.JFrame {
                 habilitarSintactico();
                 return;
             }
-            /*
+            
             switch (token) {
                 case Linea:
                     cont++;
                     resultado += "LINEA " + cont + "\n";
                     continue;
                     //break;
-                case STRING_LITERAL:
+                /*case STRING_LITERAL:
                     resultado += "  <Cadena>\t\t" + lexicos.lexemas + "\n";
                     break;
                 case Comillas:
@@ -547,8 +547,8 @@ public class FrmAnalizador extends javax.swing.JFrame {
                     break;
                 default:
                     resultado += "  < " + lexicos.lexemas + " >\n";
-                    break;
-            }*/
+                    break;*/
+            }
             model.addRow(new Object[]{
                 cont,
                 lexicos.yytext(),
@@ -563,7 +563,7 @@ public class FrmAnalizador extends javax.swing.JFrame {
         //Sintaxis s = new Sintaxis(new LexicoCup(new StringReader(ST)));
         Parser s = new Parser(new LexerSemantic((Reader)(new StringReader(ST))));
         try {
-            s.parse();
+            //s.parse();
             if(s.error_sym!=null){
                 Symbol sym = s.error_sym;
                 txtAnalizarSin.setText("Error de sintaxis. Linea: " + (sym.right+1) + " Columna: " + (sym.left+1) + ", Texto: \"" + sym.value.toString() + "\"");
@@ -575,14 +575,17 @@ public class FrmAnalizador extends javax.swing.JFrame {
                 habilitarSemantico();            
             }
         } catch (Exception ex) {
+            
             s.report_error("Error!", ex);
             txtAnalizarSin.setText(s.report_error(ex));
             txtAnalizarSin.setForeground(Color.red);
             deshabilitarSemantico();
-            /*Symbol sym = s.getErrorSymbol();
+            /*
+            Symbol sym = s.getErrorSymbol();
             txtAnalizarSin.setText("Error de sintaxis. Linea: " + (sym.right+1) + " Columna: " + (sym.left+1) + ", Texto: \"" + sym.value + "\"");
             txtAnalizarSin.setForeground(Color.red);
-            deshabilitarSemantico();*/
+            deshabilitarSemantico();
+            */
         }
     }
     
@@ -759,7 +762,7 @@ public class FrmAnalizador extends javax.swing.JFrame {
     private void bloquarEjecutable() {
         btnEjecutar.setEnabled(false);
     }
-
+    
     public static void main(String args[]) throws Exception {
 
         try {

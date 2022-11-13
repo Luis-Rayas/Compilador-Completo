@@ -69,7 +69,8 @@ terminal Bool, BitAnd, BitOr, Break, Byte, Case, Char, Cin, Coma, Comilla_simple
     Llave_a, Llave_c, Long, Main, MasIgual, MenosIgual, MayorQue, MenorQue, MayorIgual, MenorIgual,
     Modulo, ModuloIgual, Multiplicacion, MultiplicacionIgual, Namespace, Negador, Numero, NumeroDecimal, Numeral,    
     O_logico, Parent_a, Parent_c, P_coma, Printf, Punto, Register, Resta, Return, Scanf, Short, Suma, _System,
-    Std, _String, Struct, Switch, Typedef, True, Unsigned, Using, Void, While, Y_logico, STRING_LITERAL;
+    Std, _String, Struct, Switch, Typedef, True, Unsigned, Using, Void, While, Y_logico, STRING_LITERAL,
+    Asm;
 
 non terminal INICIO, SENTENCIA, DECLARACION, IF, FOR, COMPLEMENTO,
     SENTENCIA_BOOLEANA_COMPUESTA, SENTENCIA_BOOLEANA_SIMPLE,
@@ -77,7 +78,7 @@ non terminal INICIO, SENTENCIA, DECLARACION, IF, FOR, COMPLEMENTO,
     SENTENCIA_BOOLEANA_ANIDADA, FOR_PARTE_UNO, OPERACIONES_COMPLEMENTARIAS,
     WHILE, DO_WHILE, OPERADORES_ARITMETICOS, COUT, SALIDA, CIN, ENTRADA,
     CASE, SWITCH, CREACION_ARREGLO, DECLARACION_ARREGLO_ANIDADA,
-    DECLARACION_ARREGLO, IDENTIFICADORES, PRINTF, SCANF;
+    DECLARACION_ARREGLO, IDENTIFICADORES, PRINTF, SCANF, DECLARACION_FUNCION;
 
 start with INICIO;
 
@@ -93,12 +94,20 @@ IMPORTACION ::=
 ;
 
 INICIO ::= 
-    IMPORTACION Using Namespace Std P_coma Int Main Parent_a Parent_c Llave_a SENTENCIA Llave_c |
-    IMPORTACION Int Main Parent_a Parent_c Llave_a SENTENCIA Llave_c |
-    Int Main Parent_a Parent_c Llave_a SENTENCIA Llave_c |
-    Main Parent_a Parent_c Llave_a SENTENCIA Llave_c
+    IMPORTACION Using Namespace Std P_coma DECLARACION_FUNCION |
+    IMPORTACION DECLARACION_FUNCION 
 ;
+
+DECLARACION_FUNCION::=
+    Int Identificador Parent_a DECLARACION Parent_c Llave_a SENTENCIA Llave_c |
+    Int Identificador Parent_a Parent_c Llave_a SENTENCIA Llave_c |
+    Int Main Parent_a Parent_c Llave_a SENTENCIA Llave_c |
+    Main Parent_a Parent_c Llave_a SENTENCIA Llave_c 
+;
+
 SENTENCIA ::= 
+    Return Numero | 
+    Return Decimal | 
     SENTENCIA DECLARACION |
     DECLARACION |
     SENTENCIA IF |
@@ -148,6 +157,7 @@ DECLARACION_ANIDADA::=
     Identificador Igual Numero | 
 ;
 DECLARACION ::=   
+    Int DECLARACION_ANIDADA |
     Int DECLARACION_ANIDADA P_coma |
     Unsigned Int DECLARACION_ANIDADA P_coma |
     Short Int DECLARACION_ANIDADA P_coma |
@@ -155,13 +165,14 @@ DECLARACION ::=
     Long Int DECLARACION_ANIDADA P_coma |
     Unsigned Long Int DECLARACION_ANIDADA P_coma |
     Double DECLARACION_ANIDADA P_coma |
+    Double DECLARACION_ANIDADA |
     Long Double DECLARACION_ANIDADA P_coma |
     Float DECLARACION_ANIDADA P_coma |
     Char DECLARACION_ANIDADA P_coma |
     Unsigned Char DECLARACION_ANIDADA P_coma |
     _String DECLARACION_ANIDADA P_coma |
     Bool DECLARACION_ANIDADA  P_coma |
-    DECLARACION_ARREGLO_ANIDADA
+    DECLARACION_ARREGLO_ANIDADA 
 ;
 OPERADORES_ARITMETICOS::=
     Suma |
